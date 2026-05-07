@@ -186,78 +186,90 @@ class Program
                     string folder1 = Path.Combine(basePath, $"{surname}1");
                     string folder2 = Path.Combine(basePath, $"{surname}2");
 
+                    // 1. Створення папок
                     Directory.CreateDirectory(folder1);
                     Directory.CreateDirectory(folder2);
 
-                    Console.WriteLine("\nСтворені папки:");
+                    Console.WriteLine("\n[1] Створено папки:");
                     Console.WriteLine(folder1);
                     Console.WriteLine(folder2);
 
+                    // 2. Створення t1.txt у folder1
                     string t1Path = Path.Combine(folder1, "t1.txt");
 
-                    File.WriteAllText(
-                        t1Path,
+                    File.WriteAllText(t1Path,
                         "Лабораторні роботи. Мова програмування C#. Лазорик ВВ\n" +
                         "Шевченко Степан Іванович, 2001 року народження, місце проживання м. Суми"
                     );
 
-                    Console.WriteLine("\nСтворено файл:");
+                    Console.WriteLine("\n[2] Створено t1.txt:");
                     Console.WriteLine(t1Path);
 
+                    // 3. Створення t2.txt у folder1
                     string t2Path = Path.Combine(folder1, "t2.txt");
 
-                    File.WriteAllText(
-                        t2Path,
+                    File.WriteAllText(t2Path,
                         "Комар Сергій Федорович, 2000 року народження, місце проживання м. Київ"
                     );
 
-                    Console.WriteLine("\nСтворено файл:");
+                    Console.WriteLine("\n[3] Створено t2.txt:");
                     Console.WriteLine(t2Path);
 
+                    // 4. Створення t3.txt у folder2 (t1 + t2)
                     string t3Path = Path.Combine(folder2, "t3.txt");
 
                     string t1Text = File.ReadAllText(t1Path);
                     string t2Text = File.ReadAllText(t2Path);
 
-                    File.WriteAllText(
-                        t3Path,
-                        t1Text + Environment.NewLine + t2Text
-                    );
+                    File.WriteAllText(t3Path, t1Text + Environment.NewLine + t2Text);
 
-                    Console.WriteLine("\nСтворено файл (об'єднання t1 + t2):");
+                    Console.WriteLine("\n[4] Створено t3.txt (t1 + t2):");
                     Console.WriteLine(t3Path);
 
-                    Console.WriteLine("\n--- Файли у folder1 ---");
+                    // 5. Розгорнута інформація про файли ДО операцій
+                    Console.WriteLine("\n[5] Інформація про файли (до переміщень):");
 
-                    foreach (string file in Directory.GetFiles(folder1))
-                    {
-                        FileInfo info = new FileInfo(file);
+                    PrintFiles(folder1);
+                    PrintFiles(folder2);
 
-                        Console.WriteLine($"Ім'я: {info.Name}");
-                        Console.WriteLine($"Розмір: {info.Length} байт");
-                        Console.WriteLine($"Шлях: {info.FullName}");
-                        Console.WriteLine($"Створено: {info.CreationTime}");
-                        Console.WriteLine();
-                    }
+                    // 6. Переміщення t2.txt у folder2
+                    string newT2Path = Path.Combine(folder2, "t2.txt");
+                    File.Move(t2Path, newT2Path);
 
-                    Console.WriteLine("\n--- Файли у folder2 ---");
+                    Console.WriteLine("\n[6] t2.txt переміщено у folder2");
 
-                    foreach (string file in Directory.GetFiles(folder2))
-                    {
-                        FileInfo info = new FileInfo(file);
+                    // 7. Копіювання t1.txt у folder2
+                    string copyT1Path = Path.Combine(folder2, "t1.txt");
+                    File.Copy(t1Path, copyT1Path, true);
 
-                        Console.WriteLine($"Ім'я: {info.Name}");
-                        Console.WriteLine($"Розмір: {info.Length} байт");
-                        Console.WriteLine($"Шлях: {info.FullName}");
-                        Console.WriteLine($"Створено: {info.CreationTime}");
-                        Console.WriteLine();
-                    }
+                    Console.WriteLine("\n[7] t1.txt скопійовано у folder2");
 
-                    Console.WriteLine("\nГотово. Усі операції виконано успішно.");
+                    // 8. Перейменування folder2 -> ALL
+                    string allFolder = Path.Combine(basePath, "ALL");
+
+                    if (Directory.Exists(allFolder))
+                        Directory.Delete(allFolder, true);
+
+                    Directory.Move(folder2, allFolder);
+
+                    Console.WriteLine("\n[8] folder2 перейменовано в ALL");
+
+                    // 9. Видалення folder1
+                    Directory.Delete(folder1, true);
+
+                    Console.WriteLine("\n[9] folder1 видалено");
+
+                    // 10. Фінальна інформація
+                    Console.WriteLine("\n[10] Фінальна інформація про ALL:");
+
+                    PrintFiles(allFolder);
+
+                    Console.WriteLine("\nГотово.");
                     break;
             }
+            
         }
-
+    }
         static string CompressAlphabetSequences(string input)
         {
             if (string.IsNullOrEmpty(input)) return input;
@@ -290,5 +302,19 @@ class Program
 
             return result.ToString();
         }
-    }
+        static void PrintFiles(string folder)
+        {
+            Console.WriteLine($"\n--- Папка: {folder} ---");
+
+            foreach (string file in Directory.GetFiles(folder))
+            {
+                FileInfo info = new FileInfo(file);
+
+                Console.WriteLine($"Ім'я: {info.Name}");
+                Console.WriteLine($"Розмір: {info.Length} байт");
+                Console.WriteLine($"Шлях: {info.FullName}");
+                Console.WriteLine($"Створено: {info.CreationTime}");
+                Console.WriteLine();
+            }
+        }
 }
