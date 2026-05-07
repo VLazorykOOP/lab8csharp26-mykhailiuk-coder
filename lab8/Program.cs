@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,8 @@ class Program
     {
         while (true)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.InputEncoding = Encoding.UTF8;
             Console.WriteLine("Введіть номер завдання (1-5) або 'exit' для виходу: ");
             int choice = int.Parse(Console.ReadLine()!.Trim());
             switch (choice)
@@ -135,31 +137,52 @@ class Program
                      * номерами, менші заданого числа.
                      */
                     Console.WriteLine("Введіть кількість чисел:");
-                    int n = int.Parse(Console.ReadLine()!); 
+                    int n = int.Parse(Console.ReadLine()!);
 
                     Console.WriteLine("Введіть числа:");
-                    double[] numbers = new double[n];
-                    numbers = Console.ReadLine()!.Split(' ').Select(double.Parse).ToArray();
-                    
+                    double[] numbers = Console.ReadLine()!
+                        .Split(' ')
+                        .Select(double.Parse)
+                        .ToArray();
+
                     Console.WriteLine("Введіть межу:");
                     double limit = double.Parse(Console.ReadLine()!);
-                    
-                    for (int i = 0; i < n; i++) 
-                    { 
-                        if (i % 2 == 0 && numbers[i] < limit)
+                    List<int> filteredNumbers = new List<int>();
+                    for (int i = 0; i < n; i++)
+                    {
+                        if (numbers[i] < limit && i % 2 == 0)
                         {
-                            Console.WriteLine(numbers[i]);
+                            filteredNumbers.Add(i);
                         }
                     }
-                    
+
                     string binaryFilePath = @"D:\cs_tasks\lab8\lab8\data.bin";
-                    try
+
+                    // Запис у двійковий файл
+                    using (BinaryWriter writer = new BinaryWriter(File.Open(binaryFilePath, FileMode.Create)))
                     {
-                        File.WriteAllText(binaryFilePath, string.Join(" ", numbers));
+                        foreach (double number in filteredNumbers)
+                        {
+                            writer.Write(number);
+                        }
                     }
-                    catch (Exception ex)
+
+                    // Зчитування з файлу
+                    using (BinaryReader reader = new BinaryReader(File.Open(binaryFilePath, FileMode.Open)))
                     {
-                        Console.WriteLine($"Помилка: {ex.Message}");
+                        int index = 0;
+
+                        while (reader.BaseStream.Position < reader.BaseStream.Length)
+                        {
+                            double number = reader.ReadDouble();
+
+                            if (index % 2 == 0 && number < limit)
+                            {
+                                Console.WriteLine(number);
+                            }
+
+                            index++;
+                        }
                     }
                     break;
                 case 5:
@@ -201,22 +224,22 @@ class Program
                     File.WriteAllText(Path.Combine(folder1, "t1.txt"), "Лабораторні роботи. Мова програмування C#. Лазорик ВВ Шевченко Степан Іванович, 2001 року народження, місце проживання <м. Суми>");
                     File.WriteAllText(Path.Combine(folder2, "t2.txt"), "Комар Сергій Федорович, 2000 року народження, місце проживання <м. Київ>");
                     File.WriteAllText(Path.Combine(folder2, "t3.txt"), File.ReadAllText(Path.Combine(folder1, "t1.txt")) + File.ReadAllText(Path.Combine(folder2, "t2.txt")));
-                    
+
                     // Переміщення та копіювання файлів
                     Console.WriteLine("Переміщення t2.txt до папки ALL...");
                     File.Move(Path.Combine(folder2, "t2.txt"), Path.Combine(folder2, "t2_moved.txt"));
-                    
+
                     Console.WriteLine("Копіювання t1.txt до папки ALL...");
                     File.Copy(Path.Combine(folder1, "t1.txt"), Path.Combine(folder2, "t1_copied.txt"), true);
-                    
+
                     Console.WriteLine("Видалення папки " + folder1 + "...");
                     File.Delete(Path.Combine(folder1, "t1.txt"));
-                    
+
                     Console.WriteLine("Перейменування папки " + folder2 + " в ALL...");
                     File.Move(folder2, Path.Combine(basePath, "ALL"));
-                    
+
                     Console.WriteLine("Операції завершено.");
-                    
+
                     Console.WriteLine("Інформація про файли папки All:");
                     foreach (var file in Directory.GetFiles(folder2))
                     {
