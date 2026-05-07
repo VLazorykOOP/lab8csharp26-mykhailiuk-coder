@@ -147,25 +147,19 @@ class Program
 
                     Console.WriteLine("Введіть межу:");
                     double limit = double.Parse(Console.ReadLine()!);
-                    List<int> filteredNumbers = new List<int>();
-                    for (int i = 0; i < n; i++)
-                    {
-                        if (numbers[i] < limit && i % 2 == 0)
-                        {
-                            filteredNumbers.Add(i);
-                        }
-                    }
 
                     string binaryFilePath = @"D:\cs_tasks\lab8\lab8\data.bin";
 
-                    // Запис у двійковий файл
+                    // Запис усіх чисел у файл
                     using (BinaryWriter writer = new BinaryWriter(File.Open(binaryFilePath, FileMode.Create)))
                     {
-                        foreach (double number in filteredNumbers)
+                        foreach (double number in numbers)
                         {
                             writer.Write(number);
                         }
                     }
+
+                    Console.WriteLine("Числа з парними номерами, менші за межу:");
 
                     // Зчитування з файлу
                     using (BinaryReader reader = new BinaryReader(File.Open(binaryFilePath, FileMode.Open)))
@@ -176,6 +170,7 @@ class Program
                         {
                             double number = reader.ReadDouble();
 
+                            // 2-й, 4-й, 6-й елементи
                             if (index % 2 == 0 && number < limit)
                             {
                                 Console.WriteLine(number);
