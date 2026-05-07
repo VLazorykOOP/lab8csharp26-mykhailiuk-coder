@@ -178,6 +178,28 @@ class Program
                     }
                     break;
                 case 5:
+                    /*
+                     * Задача 5. Для всіх. Текст у кутових дужка замінити відповідним чином. 
+                    Завдання. Програмним шляхом:
+                    1. У папці d:\temp створіть папки <прізвище_студента>1 і 
+                    <прізвище_студента>2. 
+                    2. У папці <прізвище_студента>1: 
+                    1. створіть файл t1.txt, у який запишіть наступний текст : 
+                    Лабораторні роботи. Мова програмування C#. Лазорик ВВ
+                    2. <Шевченко Степан Іванович, 2001> року народження, місце 
+                    проживання <м. Суми>
+                    3. створіть файл t2.txt, у який запишіть наступний текст: 
+                    4. <Комар Сергій Федорович, 2000 > року народження, місце 
+                    проживання <м. Київ>
+                    3. У папці <прізвище_студента>2 створіть файл t3.txt, у який
+                    перепишіть спочатку текст із файлу t1.txt, а потім з t2.txt
+                    4. Виведіть розгорнуту інформацію про створені файли. 
+                    5. Файл t2.txt перенесіть у папку < прізвище_студента>2. 
+                    6. Файл t1.txt скопіюйте в папку < прізвище_студента>2. 
+                    7. Папку K2 перейменуйте в ALL, а папку < прізвище_студента>1
+                    вилучите. 
+                    8. Вивести повну інформацію про файли папки All.
+                    */
                     Console.WriteLine("Введіть прізвище студента:");
                     string surname = Console.ReadLine()!.Trim();
 
@@ -186,7 +208,6 @@ class Program
                     string folder1 = Path.Combine(basePath, $"{surname}1");
                     string folder2 = Path.Combine(basePath, $"{surname}2");
 
-                    // 1. Створення папок
                     Directory.CreateDirectory(folder1);
                     Directory.CreateDirectory(folder2);
 
@@ -194,7 +215,6 @@ class Program
                     Console.WriteLine(folder1);
                     Console.WriteLine(folder2);
 
-                    // 2. Створення t1.txt у folder1
                     string t1Path = Path.Combine(folder1, "t1.txt");
 
                     File.WriteAllText(t1Path,
@@ -205,7 +225,6 @@ class Program
                     Console.WriteLine("\n[2] Створено t1.txt:");
                     Console.WriteLine(t1Path);
 
-                    // 3. Створення t2.txt у folder1
                     string t2Path = Path.Combine(folder1, "t2.txt");
 
                     File.WriteAllText(t2Path,
@@ -215,7 +234,6 @@ class Program
                     Console.WriteLine("\n[3] Створено t2.txt:");
                     Console.WriteLine(t2Path);
 
-                    // 4. Створення t3.txt у folder2 (t1 + t2)
                     string t3Path = Path.Combine(folder2, "t3.txt");
 
                     string t1Text = File.ReadAllText(t1Path);
@@ -226,25 +244,21 @@ class Program
                     Console.WriteLine("\n[4] Створено t3.txt (t1 + t2):");
                     Console.WriteLine(t3Path);
 
-                    // 5. Розгорнута інформація про файли ДО операцій
                     Console.WriteLine("\n[5] Інформація про файли (до переміщень):");
 
                     PrintFiles(folder1);
                     PrintFiles(folder2);
 
-                    // 6. Переміщення t2.txt у folder2
                     string newT2Path = Path.Combine(folder2, "t2.txt");
                     File.Move(t2Path, newT2Path);
 
                     Console.WriteLine("\n[6] t2.txt переміщено у folder2");
 
-                    // 7. Копіювання t1.txt у folder2
                     string copyT1Path = Path.Combine(folder2, "t1.txt");
                     File.Copy(t1Path, copyT1Path, true);
 
                     Console.WriteLine("\n[7] t1.txt скопійовано у folder2");
 
-                    // 8. Перейменування folder2 -> ALL
                     string allFolder = Path.Combine(basePath, "ALL");
 
                     if (Directory.Exists(allFolder))
@@ -254,12 +268,10 @@ class Program
 
                     Console.WriteLine("\n[8] folder2 перейменовано в ALL");
 
-                    // 9. Видалення folder1
                     Directory.Delete(folder1, true);
 
                     Console.WriteLine("\n[9] folder1 видалено");
 
-                    // 10. Фінальна інформація
                     Console.WriteLine("\n[10] Фінальна інформація про ALL:");
 
                     PrintFiles(allFolder);
