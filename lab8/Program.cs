@@ -150,7 +150,6 @@ class Program
 
                     string binaryFilePath = @"D:\cs_tasks\lab8\lab8\data.bin";
 
-                    // Запис усіх чисел у файл
                     using (BinaryWriter writer = new BinaryWriter(File.Open(binaryFilePath, FileMode.Create)))
                     {
                         foreach (double number in numbers)
@@ -161,7 +160,6 @@ class Program
 
                     Console.WriteLine("Числа з парними номерами, менші за межу:");
 
-                    // Зчитування з файлу
                     using (BinaryReader reader = new BinaryReader(File.Open(binaryFilePath, FileMode.Open)))
                     {
                         int index = 0;
@@ -170,7 +168,6 @@ class Program
                         {
                             double number = reader.ReadDouble();
 
-                            // 2-й, 4-й, 6-й елементи
                             if (index % 2 == 0 && number < limit)
                             {
                                 Console.WriteLine(number);
@@ -181,65 +178,82 @@ class Program
                     }
                     break;
                 case 5:
-                    /*
-                     * Завдання. Програмним шляхом:
-                     * 1. У папці d:\temp створіть папки <прізвище_студента>1 
-                     * і <прізвище_студента>2. 
-                     * 2. У папці <прізвище_студента>1: 
-                     * 1. створіть файл t1.txt, у який запишіть наступний текст : 
-                     * Лабораторні роботи. Мова програмування C#. Лазорик ВВ
-                     * 2. <Шевченко Степан Іванович, 2001> року народження, місце 
-                     * проживання <м. Суми>
-                     * 3. створіть файл t2.txt, у який запишіть наступний текст: 
-                     * 4. <Комар Сергій Федорович, 2000 > року народження, місце 
-                     * проживання <м. Київ>
-                     * 3. У папці <прізвище_студента>2 створіть файл t3.txt, у який
-                     * перепишіть спочатку текст із файлу t1.txt, а потім з t2.txt
-                     * 4. Виведіть розгорнуту інформацію про створені файли. 
-                     * 5. Файл t2.txt перенесіть у папку < прізвище_студента>2. 
-                     * 6. Файл t1.txt скопіюйте в папку < прізвище_студента>2. 
-                     * 7. Папку K2 перейменуйте в ALL, а папку < прізвище_студента>1
-                     * вилучите. 
-                     * 8. Вивести повну інформацію про файли папки All.
-                     */
-
-                    Console.WriteLine("Введіть прізвище студента1:");
-                    string surname1 = Console.ReadLine()!.Trim();
-
-                    Console.WriteLine("Введіть прізвище студента2:");
-                    string surname2 = Console.ReadLine()!.Trim();
+                    Console.WriteLine("Введіть прізвище студента:");
+                    string surname = Console.ReadLine()!.Trim();
 
                     string basePath = @"D:\temp";
-                    string folder1 = Path.Combine(basePath, $"{surname1}1");
-                    string folder2 = Path.Combine(basePath, $"{surname2}2");
+
+                    string folder1 = Path.Combine(basePath, $"{surname}1");
+                    string folder2 = Path.Combine(basePath, $"{surname}2");
 
                     Directory.CreateDirectory(folder1);
                     Directory.CreateDirectory(folder2);
 
-                    File.WriteAllText(Path.Combine(folder1, "t1.txt"), "Лабораторні роботи. Мова програмування C#. Лазорик ВВ Шевченко Степан Іванович, 2001 року народження, місце проживання <м. Суми>");
-                    File.WriteAllText(Path.Combine(folder2, "t2.txt"), "Комар Сергій Федорович, 2000 року народження, місце проживання <м. Київ>");
-                    File.WriteAllText(Path.Combine(folder2, "t3.txt"), File.ReadAllText(Path.Combine(folder1, "t1.txt")) + File.ReadAllText(Path.Combine(folder2, "t2.txt")));
+                    Console.WriteLine("\nСтворені папки:");
+                    Console.WriteLine(folder1);
+                    Console.WriteLine(folder2);
 
-                    // Переміщення та копіювання файлів
-                    Console.WriteLine("Переміщення t2.txt до папки ALL...");
-                    File.Move(Path.Combine(folder2, "t2.txt"), Path.Combine(folder2, "t2_moved.txt"));
+                    string t1Path = Path.Combine(folder1, "t1.txt");
 
-                    Console.WriteLine("Копіювання t1.txt до папки ALL...");
-                    File.Copy(Path.Combine(folder1, "t1.txt"), Path.Combine(folder2, "t1_copied.txt"), true);
+                    File.WriteAllText(
+                        t1Path,
+                        "Лабораторні роботи. Мова програмування C#. Лазорик ВВ\n" +
+                        "Шевченко Степан Іванович, 2001 року народження, місце проживання м. Суми"
+                    );
 
-                    Console.WriteLine("Видалення папки " + folder1 + "...");
-                    File.Delete(Path.Combine(folder1, "t1.txt"));
+                    Console.WriteLine("\nСтворено файл:");
+                    Console.WriteLine(t1Path);
 
-                    Console.WriteLine("Перейменування папки " + folder2 + " в ALL...");
-                    File.Move(folder2, Path.Combine(basePath, "ALL"));
+                    string t2Path = Path.Combine(folder1, "t2.txt");
 
-                    Console.WriteLine("Операції завершено.");
+                    File.WriteAllText(
+                        t2Path,
+                        "Комар Сергій Федорович, 2000 року народження, місце проживання м. Київ"
+                    );
 
-                    Console.WriteLine("Інформація про файли папки All:");
-                    foreach (var file in Directory.GetFiles(folder2))
+                    Console.WriteLine("\nСтворено файл:");
+                    Console.WriteLine(t2Path);
+
+                    string t3Path = Path.Combine(folder2, "t3.txt");
+
+                    string t1Text = File.ReadAllText(t1Path);
+                    string t2Text = File.ReadAllText(t2Path);
+
+                    File.WriteAllText(
+                        t3Path,
+                        t1Text + Environment.NewLine + t2Text
+                    );
+
+                    Console.WriteLine("\nСтворено файл (об'єднання t1 + t2):");
+                    Console.WriteLine(t3Path);
+
+                    Console.WriteLine("\n--- Файли у folder1 ---");
+
+                    foreach (string file in Directory.GetFiles(folder1))
                     {
-                        Console.WriteLine(file);
+                        FileInfo info = new FileInfo(file);
+
+                        Console.WriteLine($"Ім'я: {info.Name}");
+                        Console.WriteLine($"Розмір: {info.Length} байт");
+                        Console.WriteLine($"Шлях: {info.FullName}");
+                        Console.WriteLine($"Створено: {info.CreationTime}");
+                        Console.WriteLine();
                     }
+
+                    Console.WriteLine("\n--- Файли у folder2 ---");
+
+                    foreach (string file in Directory.GetFiles(folder2))
+                    {
+                        FileInfo info = new FileInfo(file);
+
+                        Console.WriteLine($"Ім'я: {info.Name}");
+                        Console.WriteLine($"Розмір: {info.Length} байт");
+                        Console.WriteLine($"Шлях: {info.FullName}");
+                        Console.WriteLine($"Створено: {info.CreationTime}");
+                        Console.WriteLine();
+                    }
+
+                    Console.WriteLine("\nГотово. Усі операції виконано успішно.");
                     break;
             }
         }
